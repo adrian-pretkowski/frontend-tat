@@ -21,7 +21,7 @@ export const DeleteUserModal = ({
 
 
 	let deleteUser = async (e) => {
-		let respones = await api
+		let response = await api
 			.delete('/user/delete/' + selectedUser.id)
 			.then(function (response) {
 				console.log(response);

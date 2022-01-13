@@ -65,22 +65,25 @@ export const EditUserModal = ({
 
 	return (
 		<Modal
-			onClose={() => closeEditUserModal(false)}
+			onClose={() => {
+				closeEditUserModal(false);
+				window.location.reload(false);
+			}}
 			onOpen={() => openEditUserModal(true)}
 			open={openEditUserModal}
 		>
 			<Modal.Header>
-				Edit user: {`${selectedUser.firstName} ${selectedUser.lastName}`}
+				{`${selectedUser.firstName} ${selectedUser.lastName}`}
 			</Modal.Header>
 			<Modal.Content image>
 				<Image size='small' src={steve} wrapped />
-				<Modal.Description>
+				{/* <Modal.Description>
 					<Header>Edit Informations:</Header>
 					<p>ToDo...</p>
 					<p>{selectedUser.username}</p>
 				</Modal.Description>
 			</Modal.Content>
-			<Modal.Content>
+			<Modal.Content> */}
 				<Modal.Description>
 					<Header>Edit User Roles:</Header>
 					<p>
@@ -119,7 +122,7 @@ export const EditUserModal = ({
 							label='ROLE_ADMIN'
 						/>
 					</p>
-					<p>\
+					<p>
 						<Checkbox
 							onChange={(e) => {
 								setSuperAdminRole(!superAdminRole);
@@ -134,14 +137,14 @@ export const EditUserModal = ({
 				</Modal.Description>
 			</Modal.Content>
 			<Modal.Actions>
-				<Button color='black' onClick={() => closeEditUserModal(false)}>
-					Nope
-				</Button>
 				<Button
-					content="Yep, that's me"
+					content='Done'
 					labelPosition='right'
 					icon='checkmark'
-					onClick={() => closeEditUserModal(false)}
+					onClick={() => {
+						closeEditUserModal(false);
+						window.location.reload(false);
+					}}
 					positive
 				/>
 			</Modal.Actions>

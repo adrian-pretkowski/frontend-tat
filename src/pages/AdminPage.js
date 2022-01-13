@@ -90,20 +90,6 @@ export const AdminPage = () => {
 				<Header as='h2'>
 					<Header.Content>Roles in database:</Header.Content>
 				</Header>
-				{currentUserRoles.includes('ROLE_SUPER_ADMIN') && (
-					<div className='button-container'>
-						<Button
-							onClick={() => setOpenRoleModal(true)}
-							animated
-							color='green'
-						>
-							<Button.Content visible>Add Role</Button.Content>
-							<Button.Content hidden>
-								<Icon name='add' />
-							</Button.Content>
-						</Button>
-					</div>
-				)}
 				{openRoleModal && (
 					<AddRoleModal
 						openRoleModal={openRoleModal}
@@ -117,18 +103,6 @@ export const AdminPage = () => {
 								<Card.Content>
 									<Card.Header>{role.name}</Card.Header>
 								</Card.Content>
-								{currentUserRoles.includes('ROLE_SUPER_ADMIN') && (
-									<Card.Content extra>
-										<div className='ui two buttons'>
-											<Button inverted color='blue'>
-												Edit
-											</Button>
-											<Button inverted color='red'>
-												Delete
-											</Button>
-										</div>
-									</Card.Content>
-								)}
 							</Card>
 						))}
 					</Card.Group>
