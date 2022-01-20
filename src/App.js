@@ -3,6 +3,7 @@ import './App.css';
 import { AdminPage } from './pages/AdminPage';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
+import { VehicleViewPage } from './pages/VehicleViewPage';
 import PrivateRoute from './utils/PrivateRoute';
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
 					</PrivateRoute>
 				}
 			/>
+			<Route path='vehicle-view' element={<VehicleViewPage />} />
 			<Route
 				path='/admin-dashboard'
 				element={
