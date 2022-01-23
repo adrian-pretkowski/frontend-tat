@@ -11,7 +11,7 @@ import {
 	Item,
 } from 'semantic-ui-react';
 import steve from '../../../resources/steve.jpg';
-import { useState, useEffect } from 'react/cjs/react.development';
+import { useState, useEffect } from 'react';
 import useAxios from '../../../utils/useAxios';
 
 export const EditUserModal = ({

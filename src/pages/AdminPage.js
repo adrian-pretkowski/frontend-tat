@@ -22,10 +22,14 @@ export const AdminPage = () => {
 
 	let api = useAxios();
 
-	useEffect(() => {
-		getUsers();
-		getRoles();
-	}, [], []);
+	useEffect(
+		() => {
+			getUsers();
+			getRoles();
+		},
+		[],
+		[]
+	);
 
 	let getUsers = async () => {
 		let response = await api
@@ -72,7 +76,6 @@ export const AdminPage = () => {
 	const [openDeleteUserModal, setOpenDeleteUserModal] = useState(false);
 	//EditUserModal
 	const [openEditUserModal, setOpenEditUserModal] = useState(false);
-
 
 	return (
 		<Container>
@@ -173,24 +176,24 @@ export const AdminPage = () => {
 									</div>
 								</Card.Content>
 							)}
-							{openDeleteUserModal && (
-								<DeleteUserModal
-									openDeleteUserModal={openDeleteUserModal}
-									closeDeleteUserModal={setOpenDeleteUserModal}
-									selectedUser={selectedUser}
-								></DeleteUserModal>
-							)}
-							{openEditUserModal && (
-								<EditUserModal
-									openEditUserModal={openEditUserModal}
-									closeEditUserModal={setOpenEditUserModal}
-									selectedUser={selectedUser}
-									availableRoles={roles}
-								></EditUserModal>
-							)}
 						</Card>
 					))}
 				</Card.Group>
+				{openDeleteUserModal && (
+					<DeleteUserModal
+						openDeleteUserModal={openDeleteUserModal}
+						closeDeleteUserModal={setOpenDeleteUserModal}
+						selectedUser={selectedUser}
+					></DeleteUserModal>
+				)}
+				{openEditUserModal && (
+					<EditUserModal
+						openEditUserModal={openEditUserModal}
+						closeEditUserModal={setOpenEditUserModal}
+						selectedUser={selectedUser}
+						availableRoles={roles}
+					></EditUserModal>
+				)}
 			</Segment>
 		</Container>
 	);
