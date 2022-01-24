@@ -93,7 +93,7 @@ export const VehicleDetailsModal = ({
 						</Card>
 					</Card.Group>
 				</Segment>
-				<Segment>
+				<Segment style={{ overflow: 'auto' }}>
 					{mainChartVisibility && (
 						<BarChart
 							width={1800}
