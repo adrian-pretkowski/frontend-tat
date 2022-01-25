@@ -31,6 +31,13 @@ export const VehicleDetailsModal = ({
 		setSelectedEcuData(selectedVehicle.vehicle.ecuMap[data.ecuName]);
 	};
 
+	let handleClickOnName = (value, index) => {
+		setMainChartVisibility(false);
+		setSingleEcuChartVisibility(true);
+		setBarIndex(index);
+		setSelectedEcuData(selectedVehicle.vehicle.ecuMap[value.value]);
+	};
+
 	return (
 		<Modal
 			size='fullscreen'
@@ -96,7 +103,7 @@ export const VehicleDetailsModal = ({
 				<Segment style={{ overflow: 'auto' }}>
 					{mainChartVisibility && (
 						<BarChart
-							width={1800}
+							width={1750}
 							height={550}
 							data={Object.values(selectedVehicle.vehicle.ecuMap)}
 							margin={{
@@ -120,7 +127,7 @@ export const VehicleDetailsModal = ({
 								}}
 								scale='auto'
 								padding={{ left: 10, right: 10 }}
-								// onClick={handleClick}
+								onClick={handleClickOnName}
 							/>
 							<YAxis />
 							<Tooltip />
@@ -138,7 +145,7 @@ export const VehicleDetailsModal = ({
 					)}
 					{singleEcuChartVisibility && (
 						<BarChart
-							width={1800}
+							width={1750}
 							height={550}
 							data={Object.values(selectedEcuData.functionList)}
 							margin={{

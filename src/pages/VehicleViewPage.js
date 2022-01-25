@@ -1,4 +1,5 @@
 import { React, useState } from 'react';
+import { useEffect } from 'react/cjs/react.development';
 import {
 	Button,
 	Container,
@@ -7,6 +8,7 @@ import {
 	Table,
 	Header,
 	Loader,
+	Dropdown,
 } from 'semantic-ui-react';
 import { VehicleDetailsModal } from '../components/Modal/VehicleDetailsModal';
 import useAxios from '../utils/useAxios';
@@ -17,14 +19,16 @@ export const VehicleViewPage = () => {
 
 	let api = useAxios();
 
+	useEffect(() => {
+		getDistinctVehicles();
+	}, []);
+
 	let getTestPlans = async () => {
 		setLoadData(true);
 		let response = await api
 			.get('/testplans')
 			.then(function (response) {
 				if (response.status === 200) {
-					console.log('Success');
-					console.log(response.data);
 					setTestPlans(response.data);
 				}
 			})
@@ -34,6 +38,60 @@ export const VehicleViewPage = () => {
 				}
 			});
 		setLoadData(false);
+	};
+
+	let getDistinctVehicles = async () => {
+		let response = await api
+			.get('/vehicles/distinct')
+			.then(function (response) {
+				if (response.status === 200) {
+					response.data.map((element, index) => {
+						setVehicleOptions((old) => [
+							...old,
+							{
+								key: index,
+								text: element,
+								value: index,
+							},
+						]);
+					});
+				}
+			});
+	};
+
+	let getDistinctsTestLocationsBasedOnVehicleTyp = async (choosenVehicle) => {
+		if (choosenVehicle !== '') {
+			let response = await api
+				.get(`/testplans/locations/${choosenVehicle}`)
+				.then(function (response) {
+					if (response.status === 200) {
+						console.log(response.data);
+						response.data.map((element, index) => {
+							setTestLocations((old) => [
+								...old,
+								{
+									key: index,
+									text: element,
+									value: index,
+								},
+							]);
+						});
+					}
+				});
+		}
+	};
+	//useState for distinct Vehicles
+	const [vehicleOptions, setVehicleOptions] = useState([]);
+	const [selectedDistinctVehicle, setSelectedDistinctVehicle] = useState('');
+
+	//useState for distinct TestLocations based on vehicleTyp
+	const [testLocations, setTestLocations] = useState([]);
+
+	let handleChangeDistinctVehicles = (e, data) => {
+		setSelectedDistinctVehicle(vehicleOptions[data.value].text);
+		console.log('selectedDistinctVehicle:', selectedDistinctVehicle);
+		setTestLocations([]);
+		getDistinctsTestLocationsBasedOnVehicleTyp(selectedDistinctVehicle);
 	};
 
 	//VehicleDetails Modal
@@ -51,9 +109,19 @@ export const VehicleViewPage = () => {
 				<Button onClick={getTestPlans} color='blue'>
 					Caddy 5
 				</Button>
-				{/* <Button color='blue'>ID.BUZZ</Button>
-				<Button color='blue'>T6</Button>
-				<Button color='blue'>T7</Button> */}
+				<Dropdown
+					options={vehicleOptions}
+					placeholder='Select Vehicle'
+					selection
+					value={vehicleOptions.value}
+					onChange={handleChangeDistinctVehicles}
+				/>
+				<Dropdown
+					options={testLocations}
+					placeholder='Select test location'
+					selection
+					value={testLocations.value}
+				/>
 			</Segment>
 
 			{loadData ? (
