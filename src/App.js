@@ -18,7 +18,9 @@ function App() {
 					</PrivateRoute>
 				}
 			/>
+
 			<Route path='vehicle-view' element={<VehicleViewPage />} />
+
 			<Route
 				path='/admin-dashboard'
 				element={

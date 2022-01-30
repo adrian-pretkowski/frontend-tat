@@ -1,5 +1,6 @@
-import { React, useState } from 'react';
+import React, { useState } from 'react';
 import { useEffect } from 'react/cjs/react.development';
+import _ from 'lodash';
 import {
 	Button,
 	Container,
@@ -8,7 +9,8 @@ import {
 	Table,
 	Header,
 	Loader,
-	Dropdown,
+	Card,
+	Popup,
 } from 'semantic-ui-react';
 import { VehicleDetailsModal } from '../components/Modal/VehicleDetailsModal';
 import useAxios from '../utils/useAxios';
@@ -23,10 +25,16 @@ export const VehicleViewPage = () => {
 		getDistinctVehicles();
 	}, []);
 
-	let getTestPlans = async () => {
+	//-------------------------------------------
+	//----------------FUNCTIONS------------------
+
+	//Get all testplans
+	let getTestPlans = async (vehicleTyp, testLocation) => {
 		setLoadData(true);
+		console.log(vehicleTyp);
+		console.log(testLocation);
 		let response = await api
-			.get('/testplans')
+			.get(`/testplans/${vehicleTyp}/${testLocation}`)
 			.then(function (response) {
 				if (response.status === 200) {
 					setTestPlans(response.data);
@@ -40,59 +48,44 @@ export const VehicleViewPage = () => {
 		setLoadData(false);
 	};
 
+	//Get distinct Vehicles
 	let getDistinctVehicles = async () => {
 		let response = await api
 			.get('/vehicles/distinct')
 			.then(function (response) {
 				if (response.status === 200) {
-					response.data.map((element, index) => {
-						setVehicleOptions((old) => [
-							...old,
-							{
-								key: index,
-								text: element,
-								value: index,
-							},
-						]);
-					});
+					setVehicleOptions(response.data);
 				}
 			});
 	};
 
+	//Get distinct TestLocations based on selected Vehicle
 	let getDistinctsTestLocationsBasedOnVehicleTyp = async (choosenVehicle) => {
 		if (choosenVehicle !== '') {
 			let response = await api
 				.get(`/testplans/locations/${choosenVehicle}`)
 				.then(function (response) {
 					if (response.status === 200) {
-						console.log(response.data);
-						response.data.map((element, index) => {
-							setTestLocations((old) => [
-								...old,
-								{
-									key: index,
-									text: element,
-									value: index,
-								},
-							]);
-						});
+						setTestLocations(response.data);
 					}
 				});
 		}
 	};
+
+	//----------------------------------------------------
+	//----------------------------------------------------
+	let [isTooltip, setIsTooltip] = useState(true);
+	let [tooltipIcon, setTooltipIcon] = useState('close');
+
 	//useState for distinct Vehicles
-	const [vehicleOptions, setVehicleOptions] = useState([]);
-	const [selectedDistinctVehicle, setSelectedDistinctVehicle] = useState('');
+	let [vehicleOptions, setVehicleOptions] = useState([]);
+	let [selectedDistinctVehicle, setSelectedDistinctVehicle] = useState('');
+	let [isVehicleSelected, setIsVehicleSelected] = useState(false);
 
 	//useState for distinct TestLocations based on vehicleTyp
-	const [testLocations, setTestLocations] = useState([]);
-
-	let handleChangeDistinctVehicles = (e, data) => {
-		setSelectedDistinctVehicle(vehicleOptions[data.value].text);
-		console.log('selectedDistinctVehicle:', selectedDistinctVehicle);
-		setTestLocations([]);
-		getDistinctsTestLocationsBasedOnVehicleTyp(selectedDistinctVehicle);
-	};
+	let [testLocations, setTestLocations] = useState([]);
+	let [selectedLocation, setSelectedLocation] = useState('');
+	let [isLocationSelected, setIsLocationSelected] = useState(false);
 
 	//VehicleDetails Modal
 	const [openVehicleDetailsModal, setVehicleDetailsModal] = useState(false);
@@ -105,23 +98,88 @@ export const VehicleViewPage = () => {
 				<Header as='h2' floated='left'>
 					Vehicle View
 				</Header>
+				<Popup
+					content='Show/Hide context menu'
+					mouseEnterDelay={500}
+					mouseLeaveDelay={50}
+					on='hover'
+					trigger={
+						<Button
+							icon={tooltipIcon}
+							onClick={() => {
+								setIsTooltip(!isTooltip);
+								if (isTooltip === true) {
+									setTooltipIcon('angle double down');
+								} else {
+									setTooltipIcon('close');
+								}
+							}}
+						/>
+					}
+				/>
 				<Divider clearing></Divider>
-				<Button onClick={getTestPlans} color='blue'>
-					Caddy 5
-				</Button>
-				<Dropdown
-					options={vehicleOptions}
-					placeholder='Select Vehicle'
-					selection
-					value={vehicleOptions.value}
-					onChange={handleChangeDistinctVehicles}
-				/>
-				<Dropdown
-					options={testLocations}
-					placeholder='Select test location'
-					selection
-					value={testLocations.value}
-				/>
+				{isTooltip && (
+					<Segment>
+						<Header as='h3' floated='left'>
+							Select Vehicle
+							{isVehicleSelected && `: ${selectedDistinctVehicle}`}
+						</Header>
+						<Divider clearing></Divider>
+						<Card.Group itemsPerRow={5} textAlign={'center'}>
+							{vehicleOptions.map((element, index) => (
+								<Card
+									textAlign='center'
+									key={index}
+									header={element}
+									onClick={() => {
+										getDistinctsTestLocationsBasedOnVehicleTyp(element);
+										setSelectedDistinctVehicle(element);
+										setIsVehicleSelected(true);
+										setIsLocationSelected(false);
+										setSelectedLocation('');
+									}}
+								/>
+							))}
+						</Card.Group>
+
+						{isVehicleSelected && (
+							<Container>
+								<Divider hidden></Divider>
+								<Header as='h3' floated='left'>
+									Select Location{isLocationSelected && `: ${selectedLocation}`}
+								</Header>
+								<Divider clearing></Divider>
+								<Card.Group itemsPerRow={5}>
+									{testLocations.map((element, index) => (
+										<Card
+											textAlign='center'
+											key={index}
+											header={element}
+											onClick={() => {
+												setSelectedLocation(element);
+												setIsLocationSelected(true);
+											}}
+										/>
+									))}
+								</Card.Group>
+
+								{isLocationSelected && (
+									<Container>
+										<Divider hidden></Divider>
+										<Button
+											color='violet'
+											onClick={() => {
+												getTestPlans(selectedDistinctVehicle, selectedLocation);
+											}}
+										>
+											Show Vehicles
+										</Button>
+									</Container>
+								)}
+							</Container>
+						)}
+					</Segment>
+				)}
 			</Segment>
 
 			{loadData ? (
@@ -130,7 +188,7 @@ export const VehicleViewPage = () => {
 				</Loader>
 			) : (
 				<Segment>
-					<Table celled>
+					<Table sortable celled tableData={testPlans}>
 						<Table.Header>
 							<Table.Row textAlign='center'>
 								<Table.HeaderCell>Vehicle Typ</Table.HeaderCell>

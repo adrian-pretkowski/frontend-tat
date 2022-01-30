@@ -100,7 +100,7 @@ export const AdminPage = () => {
 					/>
 				)}
 				<Container>
-					<Card.Group itemsPerRow={3}>
+					<Card.Group itemsPerRow={4}>
 						{roles.map((role, index) => (
 							<Card key={index}>
 								<Card.Content>
