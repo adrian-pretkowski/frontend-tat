@@ -1,7 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react';
-import AuthContext from '../context/AuthContext';
-import useAxios from '../utils/useAxios';
-import { Card, Button, Image } from 'semantic-ui-react';
+import React, { useState } from 'react';
+import {  Button } from 'semantic-ui-react';
 import { AddRoleModal } from '../components/Modal/AddRoleModal/AddRoleModal';
 
 

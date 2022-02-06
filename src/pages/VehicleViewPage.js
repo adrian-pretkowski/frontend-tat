@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useEffect } from 'react/cjs/react.development';
-import _ from 'lodash';
 import {
 	Button,
 	Container,
@@ -31,8 +30,6 @@ export const VehicleViewPage = () => {
 	//Get all testplans
 	let getTestPlans = async (vehicleTyp, testLocation) => {
 		setLoadData(true);
-		console.log(vehicleTyp);
-		console.log(testLocation);
 		let response = await api
 			.get(`/testplans/${vehicleTyp}/${testLocation}`)
 			.then(function (response) {
@@ -188,7 +185,7 @@ export const VehicleViewPage = () => {
 				</Loader>
 			) : (
 				<Segment>
-					<Table sortable celled tableData={testPlans}>
+					<Table sortable celled>
 						<Table.Header>
 							<Table.Row textAlign='center'>
 								<Table.HeaderCell>Vehicle Typ</Table.HeaderCell>
@@ -226,6 +223,7 @@ export const VehicleViewPage = () => {
 							))}
 						</Table.Body>
 					</Table>
+
 					{openVehicleDetailsModal && (
 						<VehicleDetailsModal
 							openVehicleDetails={openVehicleDetailsModal}
