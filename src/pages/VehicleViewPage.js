@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useEffect } from 'react/cjs/react.development';
+import { useEffect } from 'react';
 import {
 	Button,
 	Container,
@@ -114,6 +114,7 @@ export const VehicleViewPage = () => {
 						/>
 					}
 				/>
+				<Button color='green'>Add New Vehicle</Button>
 				<Divider clearing></Divider>
 				{isTooltip && (
 					<Segment>
