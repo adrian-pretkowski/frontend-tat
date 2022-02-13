@@ -11,6 +11,7 @@ import {
 	Popup,
 	Input,
 } from 'semantic-ui-react';
+import useAxios from '../utils/useAxios';
 
 const HomePage = () => {
 	const [openModal, setOpenModal] = useState(false);
@@ -35,7 +36,24 @@ const HomePage = () => {
 		};
 	};
 
-	let myJson = JSON.stringify(fileArray);
+	let api = useAxios();
+
+	let addTestPlan = async (fileLines) => {
+		let response = await api
+			.post('/testplans/save', fileLines, {
+				headers: { 'Content-Type': 'application/json' },
+			})
+			.then(function (response) {
+				if (response.status === 200) {
+					console.log('Success!');
+				}
+			})
+			.catch(function (error) {
+				if (error.response.status === 400) {
+					console.log('Error!');
+				}
+			});
+	};
 
 	return (
 		<Container>
@@ -44,8 +62,9 @@ const HomePage = () => {
 
 			<Button
 				onClick={() => {
-					let myJson = JSON.stringify({ ...fileArray });
+					let myJson = JSON.stringify(fileArray);
 					console.log(myJson);
+					addTestPlan(myJson);
 				}}
 			>
 				TEST
