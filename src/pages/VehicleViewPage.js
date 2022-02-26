@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useEffect } from 'react';
+import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import {
 	Button,
 	Container,
