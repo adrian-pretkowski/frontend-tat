@@ -56,7 +56,7 @@ const HomePage = () => {
 	};
 
 	return (
-		<Container>
+		<Container style={{ marginTop: '7em' }}>
 			<h2>Hello! It is a Home Page!</h2>
 			<h3>You are logged to the home page...</h3>
 

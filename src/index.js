@@ -5,12 +5,14 @@ import { BrowserRouter as Router } from 'react-router-dom';
 // import Navbar from './components/Navbar';
 import Navbar from './components/Navbar/Navbar';
 import { AuthProvider } from './context/AuthContext';
+import SemanticNavbar from './components/SemanticNavbar';
 
 ReactDOM.render(
 	<React.StrictMode>
 		<Router>
 			<AuthProvider>
-				<Navbar />
+				<SemanticNavbar />
+				{/* <Navbar /> */}
 				<App />
 			</AuthProvider>
 		</Router>

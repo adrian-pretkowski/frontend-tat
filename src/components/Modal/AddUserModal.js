@@ -9,7 +9,7 @@ import {
 	Item,
 } from 'semantic-ui-react';
 import React from 'react';
-import useAxios from '../../../utils/useAxios';
+import useAxios from '../../utils/useAxios';
 import EmailValidator from 'email-validator';
 import { useState } from 'react/cjs/react.development';
 

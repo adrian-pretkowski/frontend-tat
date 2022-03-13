@@ -1,17 +1,8 @@
-import { useState, useEffect } from 'react';
-import {
-	BarChart,
-	Bar,
-	XAxis,
-	YAxis,
-	CartesianGrid,
-	Tooltip,
-	Legend,
-	ResponsiveContainer,
-	Cell,
-	Brush,
-} from 'recharts';
-import { Button, Modal, Segment, Card } from 'semantic-ui-react';
+import React, { useState, useEffect } from 'react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import { Button, Modal, Segment, Card, Table } from 'semantic-ui-react';
+import _ from 'lodash';
+import { FunctionDetailsModal } from './FunctionDetailsModal';
 
 export const VehicleDetailsModal = ({
 	openVehicleDetails,
@@ -23,6 +14,8 @@ export const VehicleDetailsModal = ({
 	const [singleEcuChartVisibility, setSingleEcuChartVisibility] =
 		useState(false);
 	const [selectedEcuData, setSelectedEcuData] = useState([]);
+
+	const [functionsListVisibility, setFunctionsListVisibility] = useState(false);
 
 	let handleClick = (data, index) => {
 		setMainChartVisibility(false);
@@ -37,6 +30,71 @@ export const VehicleDetailsModal = ({
 		setBarIndex(index);
 		setSelectedEcuData(selectedVehicle.vehicle.ecuMap[value.value]);
 	};
+
+	
+	const [functionList, setFunctionList] = useState([]);
+	let getAllFunctions = (ecuMap) => {
+		setFunctionList([]);
+
+		Object.values(ecuMap).map((ecu, index) => {
+			ecu.functionList.map((func, index) => {
+				setFunctionList((oldValue) => [
+					...oldValue,
+					{
+						functionId: func.functionId,
+						functionName: func.functionName,
+						startTime: func.startTime,
+						duration: func.duration,
+						ecuName: ecu.ecuName,
+					},
+				]);
+			});
+		});
+	};
+
+	//-------------SORTING TABLE FUNCTIONS--------------
+
+	function funcTableReducer(state, action) {
+		switch (action.type) {
+			case 'INIT_DATA':
+				return {
+					column: null,
+					dataFunc: functionList,
+					direction: null,
+				};
+			case 'CHANGE_SORT':
+				if (state.column === action.column) {
+					return {
+						...state,
+						dataFunc: state.dataFunc.slice().reverse(),
+						direction:
+							state.direction === 'ascending' ? 'descending' : 'ascending',
+					};
+				}
+				return {
+					column: action.column,
+					dataFunc: _.sortBy(state.dataFunc, [action.column]),
+					direction: 'ascending',
+				};
+			default:
+				throw new Error();
+		}
+	}
+
+	const initialState = {
+		column: null,
+		dataFunc: functionList,
+		direction: null,
+	};
+
+	const [state, dispatch] = React.useReducer(funcTableReducer, initialState);
+	const { column, dataFunc, direction } = state;
+
+	//------------------------------------------------------
+
+	//FunctionDetails Modal
+	const [openFunctionDetailsModal, setFunctionDetailsModal] = useState(false);
+	const [selectedFunction, setSelectedFunction] = useState();
 
 	return (
 		<Modal
@@ -183,24 +241,139 @@ export const VehicleDetailsModal = ({
 							/>
 						</BarChart>
 					)}
+
+					{functionsListVisibility && (
+						<Table sortable celled striped compact fixed>
+							<Table.Header className='functionsTableHeader'>
+								<Table.Row className='functionsTableRow'>
+									<Table.HeaderCell
+										textAlign='center'
+										sorted={column === 'functionId' ? direction : null}
+										onClick={() =>
+											dispatch({ type: 'CHANGE_SORT', column: 'functionId' })
+										}
+									>
+										FunctionID
+									</Table.HeaderCell>
+									<Table.HeaderCell
+										textAlign='center'
+										sorted={column === 'ecuName' ? direction : null}
+										onClick={() =>
+											dispatch({ type: 'CHANGE_SORT', column: 'ecuName' })
+										}
+									>
+										Ecu
+									</Table.HeaderCell>
+									<Table.HeaderCell
+										textAlign='center'
+										sorted={column === 'functionName' ? direction : null}
+										onClick={() =>
+											dispatch({ type: 'CHANGE_SORT', column: 'functionName' })
+										}
+									>
+										Function Name
+									</Table.HeaderCell>
+									<Table.HeaderCell
+										textAlign='center'
+										sorted={column === 'startTime' ? direction : null}
+										onClick={() =>
+											dispatch({ type: 'CHANGE_SORT', column: 'startTime' })
+										}
+									>
+										Start Time
+									</Table.HeaderCell>
+									<Table.HeaderCell
+										textAlign='center'
+										sorted={column === 'duration' ? direction : null}
+										onClick={() =>
+											dispatch({ type: 'CHANGE_SORT', column: 'duration' })
+										}
+									>
+										Duration
+									</Table.HeaderCell>
+									<Table.HeaderCell
+										textAlign='center'
+										sorted={column === 'action' ? direction : null}
+										onClick={() =>
+											dispatch({ type: 'CHANGE_SORT', column: 'action' })
+										}
+									>
+										Action
+									</Table.HeaderCell>
+								</Table.Row>
+							</Table.Header>
+							<Table.Body className='functionsTableBody'>
+								{dataFunc.map(
+									(
+										{ functionId, functionName, startTime, duration, ecuName },
+										index
+									) => (
+										<Table.Row className='functionsTableRow' key={functionId}>
+											<Table.Cell textAlign='center'>{functionId}</Table.Cell>
+											<Table.Cell textAlign='center'>{ecuName}</Table.Cell>
+											<Table.Cell>{functionName}</Table.Cell>
+											<Table.Cell textAlign='center'>{startTime}</Table.Cell>
+											<Table.Cell textAlign='center'>{duration}s</Table.Cell>
+											<Table.Cell textAlign='center'>
+												<Button
+													size='mini'
+													color='orange'
+													onClick={() => {
+														setFunctionDetailsModal(true);
+														setSelectedFunction(dataFunc[index]);
+													}}
+												>
+													Details
+												</Button>
+											</Table.Cell>
+										</Table.Row>
+									)
+								)}
+							</Table.Body>
+						</Table>
+					)}
 				</Segment>
 			</Modal.Content>
 			<Modal.Actions>
-				{singleEcuChartVisibility && (
+				{(singleEcuChartVisibility || functionsListVisibility) && (
 					<Button
 						color='blue'
 						onClick={() => {
 							setSingleEcuChartVisibility(false);
 							setMainChartVisibility(true);
+							setFunctionsListVisibility(false);
 						}}
 					>
 						Show Vehicle
+					</Button>
+				)}
+				{!functionsListVisibility && (
+					<Button
+						onClick={() => {
+							setMainChartVisibility(false);
+							setSingleEcuChartVisibility(false);
+							getAllFunctions(selectedVehicle.vehicle.ecuMap);
+							dispatch({ type: 'INIT_DATA' });
+							setFunctionsListVisibility(true);
+						}}
+					>
+						Functions
 					</Button>
 				)}
 				<Button color='black' onClick={() => closeVehicleDetails(false)}>
 					Close
 				</Button>
 			</Modal.Actions>
+
+			{openFunctionDetailsModal && (
+				<FunctionDetailsModal
+					openFunctionDetails={openFunctionDetailsModal}
+					closeFunctionDetails={setFunctionDetailsModal}
+					selectedFunction={selectedFunction}
+					sVehicleTyp={selectedVehicle.vehicle.vehicleTyp}
+					sLocation={selectedVehicle.testLocation}
+				/>
+			)}
 		</Modal>
 	);
 };

@@ -5,10 +5,10 @@ import useAxios from '../utils/useAxios';
 import { Card, Button, Image } from 'semantic-ui-react';
 import steve from '../resources/steve.jpg';
 import './styles/AdminPage.css';
-import { AddRoleModal } from '../components/Modal/AddRoleModal/AddRoleModal';
-import { AddUserModal } from '../components/Modal/AddUserModal/AddUserModal';
-import { DeleteUserModal } from '../components/Modal/DeleteUserModal/DeleteUserModal';
-import { EditUserModal } from '../components/Modal/EditUserModal/EditUserModal';
+import { AddRoleModal } from '../components/Modal/AddRoleModal';
+import { AddUserModal } from '../components/Modal/AddUserModal';
+import { DeleteUserModal } from '../components/Modal/DeleteUserModal';
+import { EditUserModal } from '../components/Modal/EditUserModal';
 
 export const AdminPage = () => {
 	let [users, setUsers] = useState([]);
@@ -78,7 +78,7 @@ export const AdminPage = () => {
 	const [openEditUserModal, setOpenEditUserModal] = useState(false);
 
 	return (
-		<Container>
+		<Container style={{ marginTop: '7em' }}>
 			<div className='admin-header'>
 				<Header as='h1'>
 					<Icon name='settings' />

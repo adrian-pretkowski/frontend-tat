@@ -1,6 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import { AdminPage } from './pages/AdminPage';
+import { EcuViewPage } from './pages/EcuViewPage';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import { VehicleViewPage } from './pages/VehicleViewPage';
@@ -9,6 +10,7 @@ import PrivateRoute from './utils/PrivateRoute';
 function App() {
 	return (
 		// <AuthProvider>
+
 		<Routes>
 			<Route
 				path='/'
@@ -20,6 +22,7 @@ function App() {
 			/>
 
 			<Route path='vehicle-view' element={<VehicleViewPage />} />
+			<Route path='ecu-view' element={<EcuViewPage />} />
 
 			<Route
 				path='/admin-dashboard'

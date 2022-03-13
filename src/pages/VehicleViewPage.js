@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useEffect } from 'react';
-import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import {
 	Button,
 	Container,
@@ -90,7 +89,7 @@ export const VehicleViewPage = () => {
 	const [selectedVehicle, setSelectedVehicle] = useState();
 
 	return (
-		<Container>
+		<Container style={{ marginTop: '7em' }}>
 			<div></div>
 			<Segment>
 				<Header as='h2' floated='left'>

@@ -10,7 +10,7 @@ import {
 	Icon,
 } from 'semantic-ui-react';
 import { useState } from 'react';
-import useAxios from '../../../utils/useAxios';
+import useAxios from '../../utils/useAxios';
 
 export const DeleteUserModal = ({
 	openDeleteUserModal,

@@ -10,9 +10,9 @@ import {
 	Container,
 	Item,
 } from 'semantic-ui-react';
-import steve from '../../../resources/steve.jpg';
+import steve from '../../resources/steve.jpg';
 import { useState, useEffect } from 'react';
-import useAxios from '../../../utils/useAxios';
+import useAxios from '../../utils/useAxios';
 
 export const EditUserModal = ({
 	openEditUserModal,

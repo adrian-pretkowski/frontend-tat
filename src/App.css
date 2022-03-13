@@ -26,3 +26,16 @@ body {
 .vehicleModal {
 	transform: translateX(2.5%);
 }
+
+.functionsTableBody {
+	display: block;
+	height: 500px;
+	overflow: auto;
+}
+
+.functionsTableHeader,
+.functionsTableBody .functionsTableRow {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
