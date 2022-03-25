@@ -2,7 +2,7 @@ import axios from 'axios';
 import jwt_decode from 'jwt-decode';
 import dayjs from 'dayjs';
 import { API_BASE_URL, API_REFRESH_TOKEN } from '../static/apiServices';
-import { useContext } from 'react/cjs/react.development';
+import { useContext } from 'react';
 import AuthContext from '../context/AuthContext';
 
 const useAxios = () => {

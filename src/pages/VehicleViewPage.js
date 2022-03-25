@@ -9,7 +9,8 @@ import {
 	Header,
 	Loader,
 	Card,
-	Popup,
+	Icon,
+	Grid,
 } from 'semantic-ui-react';
 import { VehicleDetailsModal } from '../components/Modal/VehicleDetailsModal';
 import useAxios from '../utils/useAxios';
@@ -17,6 +18,7 @@ import useAxios from '../utils/useAxios';
 export const VehicleViewPage = () => {
 	const [loadData, setLoadData] = useState(false);
 	const [testPlans, setTestPlans] = useState([]);
+	const [isTableVisible, setIsTableVisible] = useState(false);
 
 	let api = useAxios();
 
@@ -93,90 +95,102 @@ export const VehicleViewPage = () => {
 			<div></div>
 			<Segment>
 				<Header as='h2' floated='left'>
-					Vehicle View
+					<Icon className='fas fa-car' /> Vehicle View
 				</Header>
-				<Popup
-					content='Show/Hide context menu'
-					mouseEnterDelay={500}
-					mouseLeaveDelay={50}
-					on='hover'
-					trigger={
-						<Button
-							icon={tooltipIcon}
-							onClick={() => {
-								setIsTooltip(!isTooltip);
-								if (isTooltip === true) {
-									setTooltipIcon('angle double down');
-								} else {
-									setTooltipIcon('close');
-								}
-							}}
-						/>
-					}
-				/>
-				<Button color='green'>Add New Vehicle</Button>
-				<Divider clearing></Divider>
-				{isTooltip && (
-					<Segment>
-						<Header as='h3' floated='left'>
-							Select Vehicle
-							{isVehicleSelected && `: ${selectedDistinctVehicle}`}
-						</Header>
-						<Divider clearing></Divider>
-						<Card.Group itemsPerRow={5} textAlign={'center'}>
-							{vehicleOptions.map((element, index) => (
-								<Card
-									textAlign='center'
-									key={index}
-									header={element}
-									onClick={() => {
-										getDistinctsTestLocationsBasedOnVehicleTyp(element);
-										setSelectedDistinctVehicle(element);
-										setIsVehicleSelected(true);
-										setIsLocationSelected(false);
-										setSelectedLocation('');
-									}}
-								/>
-							))}
-						</Card.Group>
 
-						{isVehicleSelected && (
+				<Button
+					floated='right'
+					icon={tooltipIcon}
+					onClick={() => {
+						setIsTooltip(!isTooltip);
+						if (isTooltip === true) {
+							setTooltipIcon('angle double down');
+						} else {
+							setTooltipIcon('close');
+						}
+					}}
+				/>
+				<Button floated='right' color='green'>
+					Add New Vehicle
+				</Button>
+				<Divider clearing></Divider>
+
+				{isTooltip && (
+					<Container>
+						<Grid columns={2} divided>
+							<Grid.Row>
+								<Grid.Column>
+									<Segment>
+										<Header as='h3'>
+											Select Vehicle
+											{isVehicleSelected && `: ${selectedDistinctVehicle}`}
+										</Header>
+										<Divider clearing></Divider>
+										<Card.Group itemsPerRow={2} textAlign={'center'}>
+											{vehicleOptions.map((element, index) => (
+												<Card
+													textAlign='center'
+													key={index}
+													header={element}
+													onClick={() => {
+														getDistinctsTestLocationsBasedOnVehicleTyp(element);
+														setSelectedDistinctVehicle(element);
+														setIsVehicleSelected(true);
+														setIsLocationSelected(false);
+														setIsTableVisible(false);
+														setSelectedLocation('');
+														setTestPlans([]);
+													}}
+												/>
+											))}
+										</Card.Group>
+									</Segment>
+								</Grid.Column>
+								{isVehicleSelected && (
+									<Grid.Column>
+										<Segment>
+											<Header as='h3'>
+												Select Location
+												{isLocationSelected && `: ${selectedLocation}`}
+											</Header>
+											<Divider clearing></Divider>
+											<Card.Group itemsPerRow={2}>
+												{testLocations.map((element, index) => (
+													<Card
+														textAlign='center'
+														key={index}
+														header={element}
+														onClick={() => {
+															setSelectedLocation(element);
+															setIsLocationSelected(true);
+															setIsTableVisible(false);
+															setTestPlans([]);
+														}}
+													/>
+												))}
+											</Card.Group>
+										</Segment>
+									</Grid.Column>
+								)}
+							</Grid.Row>
+						</Grid>
+						{isLocationSelected && (
 							<Container>
 								<Divider hidden></Divider>
-								<Header as='h3' floated='left'>
-									Select Location{isLocationSelected && `: ${selectedLocation}`}
-								</Header>
-								<Divider clearing></Divider>
-								<Card.Group itemsPerRow={5}>
-									{testLocations.map((element, index) => (
-										<Card
-											textAlign='center'
-											key={index}
-											header={element}
-											onClick={() => {
-												setSelectedLocation(element);
-												setIsLocationSelected(true);
-											}}
-										/>
-									))}
-								</Card.Group>
-
-								{isLocationSelected && (
-									<Container>
-										<Divider hidden></Divider>
-										<Button
-											color='violet'
-											onClick={() => {
-												getTestPlans(selectedDistinctVehicle, selectedLocation);
-											}}
-										>
-											Show Vehicles
-										</Button>
-									</Container>
-								)}
+								<Segment secondary textAlign='center'>
+									<Button
+										color='blue'
+										onClick={() => {
+											getTestPlans(selectedDistinctVehicle, selectedLocation);
+											setIsTableVisible(true);
+										}}
+									>
+										Show Vehicles
+									</Button>
+								</Segment>
 							</Container>
 						)}
-					</Segment>
+					</Container>
 				)}
 			</Segment>
 
@@ -185,54 +199,58 @@ export const VehicleViewPage = () => {
 					Loading...
 				</Loader>
 			) : (
-				<Segment>
-					<Table sortable celled>
-						<Table.Header>
-							<Table.Row textAlign='center'>
-								<Table.HeaderCell>Vehicle Typ</Table.HeaderCell>
-								<Table.HeaderCell>Test Location</Table.HeaderCell>
-								<Table.HeaderCell>VIN</Table.HeaderCell>
-								<Table.HeaderCell>Kenn Number</Table.HeaderCell>
-								<Table.HeaderCell>Test Duration</Table.HeaderCell>
-								<Table.HeaderCell>Test Date</Table.HeaderCell>
-								<Table.HeaderCell>Action</Table.HeaderCell>
-							</Table.Row>
-						</Table.Header>
-
-						<Table.Body>
-							{testPlans.map((testPlan, index) => (
-								<Table.Row key={index} textAlign='center'>
-									<Table.Cell>{testPlan.vehicle.vehicleTyp}</Table.Cell>
-									<Table.Cell>{testPlan.testLocation}</Table.Cell>
-									<Table.Cell>{testPlan.vehicle.vinNumber}</Table.Cell>
-									<Table.Cell>{testPlan.vehicle.kennNumber}</Table.Cell>
-									<Table.Cell>{testPlan.testDuration}</Table.Cell>
-									<Table.Cell>{testPlan.testDate}</Table.Cell>
-									<Table.Cell>
-										<Button
-											color='blue'
-											onClick={() => {
-												setVehicleDetailsModal(true);
-												setSelectedVehicle(testPlan);
-											}}
-										>
-											Details
-										</Button>{' '}
-										<Button color='red'>Delete</Button>
-									</Table.Cell>
+				isVehicleSelected &&
+				isLocationSelected &&
+				isTableVisible && (
+					<Segment>
+						<Table sortable celled>
+							<Table.Header>
+								<Table.Row textAlign='center'>
+									<Table.HeaderCell>Vehicle Typ</Table.HeaderCell>
+									<Table.HeaderCell>Test Location</Table.HeaderCell>
+									<Table.HeaderCell>VIN</Table.HeaderCell>
+									<Table.HeaderCell>Kenn Number</Table.HeaderCell>
+									<Table.HeaderCell>Test Duration</Table.HeaderCell>
+									<Table.HeaderCell>Test Date</Table.HeaderCell>
+									<Table.HeaderCell>Action</Table.HeaderCell>
 								</Table.Row>
-							))}
-						</Table.Body>
-					</Table>
+							</Table.Header>
 
-					{openVehicleDetailsModal && (
-						<VehicleDetailsModal
-							openVehicleDetails={openVehicleDetailsModal}
-							closeVehicleDetails={setVehicleDetailsModal}
-							selectedVehicle={selectedVehicle}
-						/>
-					)}
-				</Segment>
+							<Table.Body>
+								{testPlans.map((testPlan, index) => (
+									<Table.Row key={index} textAlign='center'>
+										<Table.Cell>{testPlan.vehicle.vehicleTyp}</Table.Cell>
+										<Table.Cell>{testPlan.testLocation}</Table.Cell>
+										<Table.Cell>{testPlan.vehicle.vinNumber}</Table.Cell>
+										<Table.Cell>{testPlan.vehicle.kennNumber}</Table.Cell>
+										<Table.Cell>{testPlan.testDuration}</Table.Cell>
+										<Table.Cell>{testPlan.testDate}</Table.Cell>
+										<Table.Cell>
+											<Button
+												color='blue'
+												onClick={() => {
+													setVehicleDetailsModal(true);
+													setSelectedVehicle(testPlan);
+												}}
+											>
+												Details
+											</Button>{' '}
+											<Button color='red'>Delete</Button>
+										</Table.Cell>
+									</Table.Row>
+								))}
+							</Table.Body>
+						</Table>
+
+						{openVehicleDetailsModal && (
+							<VehicleDetailsModal
+								openVehicleDetails={openVehicleDetailsModal}
+								closeVehicleDetails={setVehicleDetailsModal}
+								selectedVehicle={selectedVehicle}
+							/>
+						)}
+					</Segment>
+				)
 			)}
 		</Container>
 	);

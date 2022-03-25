@@ -37,7 +37,7 @@ export const FunctionDetailsModal = ({
 		setLoadData(true);
 		let response = await api
 			.get(
-				`functions/durations/${sVehicleTyp}/${sLocation}/${selectedFunction.ecuName}/${selectedFunction.functionName}`
+				`/functions/durations/${sVehicleTyp}/${sLocation}/${selectedFunction.ecuName}/${selectedFunction.functionName}`
 			)
 			.then(function (response) {
 				if (response.status === 200) {
