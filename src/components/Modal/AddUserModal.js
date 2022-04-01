@@ -8,10 +8,9 @@ import {
 	Container,
 	Item,
 } from 'semantic-ui-react';
-import React from 'react';
+import React, { useState } from 'react';
 import useAxios from '../../utils/useAxios';
 import EmailValidator from 'email-validator';
-import { useState } from 'react/cjs/react.development';
 
 export const AddUserModal = ({ openUserModal, closeUserModal }) => {
 	/**

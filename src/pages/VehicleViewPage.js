@@ -12,6 +12,7 @@ import {
 	Icon,
 	Grid,
 } from 'semantic-ui-react';
+import { AddVehicleModal } from '../components/Modal/AddVehicleModal';
 import { VehicleDetailsModal } from '../components/Modal/VehicleDetailsModal';
 import useAxios from '../utils/useAxios';
 
@@ -90,6 +91,9 @@ export const VehicleViewPage = () => {
 	const [openVehicleDetailsModal, setVehicleDetailsModal] = useState(false);
 	const [selectedVehicle, setSelectedVehicle] = useState();
 
+	//AddVehicle Modal
+	const [openAddVehicleModal, setAddVehicleModal] = useState(false);
+
 	return (
 		<Container style={{ marginTop: '7em' }}>
 			<div></div>
@@ -110,9 +114,20 @@ export const VehicleViewPage = () => {
 						}
 					}}
 				/>
-				<Button floated='right' color='green'>
+				<Button
+					floated='right'
+					color='green'
+					onClick={() => setAddVehicleModal(true)}
+				>
 					Add New Vehicle
 				</Button>
+				{openAddVehicleModal && (
+					<AddVehicleModal
+						openAddVehicleModal={openAddVehicleModal}
+						closeAddVehicleModal={setAddVehicleModal}
+					/>
+				)}
+
 				<Divider clearing></Divider>
 
 				{isTooltip && (
