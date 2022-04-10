@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Line } from 'recharts';
 import {
 	Button,
 	Container,

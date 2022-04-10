@@ -2,14 +2,8 @@ import {
 	Button,
 	Modal,
 	Header,
-	Form,
-	Message,
-	Divider,
-	Container,
-	Item,
 	Icon,
 } from 'semantic-ui-react';
-import { useState } from 'react';
 import useAxios from '../../utils/useAxios';
 
 export const DeleteUserModal = ({
