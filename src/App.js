@@ -5,13 +5,12 @@ import { EcuViewPage } from './pages/EcuViewPage';
 import { FunctionViewPage } from './pages/FunctionViewPage';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
+import { PrNumbersPage } from './pages/PrNumbersPage';
 import { VehicleViewPage } from './pages/VehicleViewPage';
 import PrivateRoute from './utils/PrivateRoute';
 
 function App() {
 	return (
-		// <AuthProvider>
-
 		<Routes>
 			<Route
 				path='/'
@@ -22,9 +21,38 @@ function App() {
 				}
 			/>
 
-			<Route path='vehicle-view' element={<PrivateRoute><VehicleViewPage /></PrivateRoute>} />
-			<Route path='ecu-view' element={<PrivateRoute><EcuViewPage /></PrivateRoute>} />
-			<Route path='function-view' element={<PrivateRoute><FunctionViewPage /></PrivateRoute>} />
+			<Route
+				path='vehicle-view'
+				element={
+					<PrivateRoute>
+						<VehicleViewPage />
+					</PrivateRoute>
+				}
+			/>
+			<Route
+				path='ecu-view'
+				element={
+					<PrivateRoute>
+						<EcuViewPage />
+					</PrivateRoute>
+				}
+			/>
+			<Route
+				path='function-view'
+				element={
+					<PrivateRoute>
+						<FunctionViewPage />
+					</PrivateRoute>
+				}
+			/>
+			<Route
+				path='pr-numbers'
+				element={
+					<PrivateRoute>
+						<PrNumbersPage />
+					</PrivateRoute>
+				}
+			/>
 
 			<Route
 				path='/admin-dashboard'
@@ -37,7 +65,6 @@ function App() {
 
 			<Route path='/login' element={<LoginPage />} />
 		</Routes>
-		// </AuthProvider>
 	);
 }
 

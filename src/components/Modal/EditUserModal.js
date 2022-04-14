@@ -4,11 +4,6 @@ import {
 	Header,
 	Image,
 	Checkbox,
-	Form,
-	Message,
-	Divider,
-	Container,
-	Item,
 } from 'semantic-ui-react';
 import steve from '../../resources/steve.jpg';
 import { useState, useEffect } from 'react';
